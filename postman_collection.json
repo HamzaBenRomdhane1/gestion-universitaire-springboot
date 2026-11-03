@@ -1,0 +1,974 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+		"name": "DS1 Spring Boot - Gestion Académique & Scolaire",
+		"description": "Collection Postman complète pour le projet DS1 - Développement Web Spring Boot (Université / École).\nContient les opérations CRUD complètes, les requêtes personnalisées JPA, et les tests de gestion d'erreurs (400, 404).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Départements",
+			"item": [
+				{
+					"name": "GET Tous les départements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/departements",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"La réponse est un tableau non vide\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an(\"array\");",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Département par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/departements/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Contient l'identifiant 1\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer un département",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Génie Énergétique\",\n    \"code\": \"ENERG\",\n    \"localisation\": \"Bâtiment C - RDC\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/departements",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Le département créé possède un ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "PUT Modifier un département",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Informatique & Nouvelles Technologies\",\n    \"code\": \"INFO\",\n    \"localisation\": \"Bâtiment A - Étage 2\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/departements/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Erreur 404 - Département inexistant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/departements/99999",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements", "99999"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Erreur 400 - Validation échouée",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"\",\n    \"code\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/departements",
+							"host": ["{{baseUrl}}"],
+							"path": ["departements"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Contient la map des erreurs de validation\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.validationErrors).to.be.an(\"object\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Enseignants",
+			"item": [
+				{
+					"name": "GET Tous les enseignants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/enseignants",
+							"host": ["{{baseUrl}}"],
+							"path": ["enseignants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Enseignant par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/enseignants/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["enseignants", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Enseignants par département",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/enseignants/departement/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["enseignants", "departement", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer un enseignant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Dridi\",\n    \"prenom\": \"Sami\",\n    \"email\": \"sami.dridi.new@ecole.tn\",\n    \"specialite\": \"Systèmes Distribués\",\n    \"telephone\": \"+216 71 888 777\",\n    \"departement\": { \"id\": 1 }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/enseignants",
+							"host": ["{{baseUrl}}"],
+							"path": ["enseignants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Erreur 400 - Format Email Invalide",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Test\",\n    \"prenom\": \"Prof\",\n    \"email\": \"not-an-email\",\n    \"specialite\": \"Informatique\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/enseignants",
+							"host": ["{{baseUrl}}"],
+							"path": ["enseignants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Salles",
+			"item": [
+				{
+					"name": "GET Toutes les salles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/salles",
+							"host": ["{{baseUrl}}"],
+							"path": ["salles"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Salle par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/salles/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["salles", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer une salle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numero\": \"Lab-Data-505\",\n    \"capacite\": 24,\n    \"type\": \"Laboratoire Big Data\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/salles",
+							"host": ["{{baseUrl}}"],
+							"path": ["salles"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Erreur 400 - Capacité Invalide (Min 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numero\": \"Salle-Zero\",\n    \"capacite\": 0,\n    \"type\": \"Salle TD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/salles",
+							"host": ["{{baseUrl}}"],
+							"path": ["salles"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "4. Cours",
+			"item": [
+				{
+					"name": "GET Tous les cours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cours",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Cours par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cours/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET [REQUETE PERSO 1] Cours par département",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cours/departement/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours", "departement", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Tous les cours appartiennent au département 1\", function () {",
+									"    var data = pm.response.json();",
+									"    data.forEach(function(c) {",
+									"        pm.expect(c.departement.id).to.eql(1);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET [REQUETE PERSO 2] Cours par salle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cours/salle/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours", "salle", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Affecter Salle à Cours (ManyToMany)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cours/1/salles/3",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours", "1", "salles", "3"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer un cours",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titre\": \"Cybersécurité & Audit SI\",\n    \"code\": \"CS-SEC-402\",\n    \"volumeHoraire\": 36,\n    \"credits\": 4,\n    \"departement\": { \"id\": 1 },\n    \"enseignant\": { \"id\": 1 }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cours",
+							"host": ["{{baseUrl}}"],
+							"path": ["cours"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "5. Étudiants",
+			"item": [
+				{
+					"name": "GET Tous les étudiants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/etudiants",
+							"host": ["{{baseUrl}}"],
+							"path": ["etudiants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Étudiant par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/etudiants/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["etudiants", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET [REQUETE PERSO 4] Étudiants inscrits à un cours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/etudiants/cours/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["etudiants", "cours", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retourne la liste des étudiants du cours\", function () {",
+									"    var list = pm.response.json();",
+									"    pm.expect(list).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer un étudiant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matricule\": \"ETU-2026-777\",\n    \"nom\": \"Mahjoub\",\n    \"prenom\": \"Nour\",\n    \"email\": \"nour.mahjoub.new@etudiant.tn\",\n    \"dateNaissance\": \"2002-07-19\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/etudiants",
+							"host": ["{{baseUrl}}"],
+							"path": ["etudiants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Erreur 400 - Doublon Matricule",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matricule\": \"ETU-2026-001\",\n    \"nom\": \"Test\",\n    \"prenom\": \"Doublon\",\n    \"email\": \"autre.email@etudiant.tn\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/etudiants",
+							"host": ["{{baseUrl}}"],
+							"path": ["etudiants"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "6. Inscriptions",
+			"item": [
+				{
+					"name": "GET Toutes les inscriptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["inscriptions"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET Inscription par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inscriptions/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["inscriptions", "1"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "GET [REQUETE PERSO 3] Inscriptions VALIDE note >= 15.0",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inscriptions/recherche?statut=VALIDE&minNote=15.0",
+							"host": ["{{baseUrl}}"],
+							"path": ["inscriptions", "recherche"],
+							"query": [
+								{
+									"key": "statut",
+									"value": "VALIDE"
+								},
+								{
+									"key": "minNote",
+									"value": "15.0"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Toutes les inscriptions ont un statut VALIDE et note >= 15.0\", function () {",
+									"    var list = pm.response.json();",
+									"    list.forEach(function(i) {",
+									"        pm.expect(i.statut).to.eql(\"VALIDE\");",
+									"        pm.expect(i.note).to.be.at.least(15.0);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Créer une inscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"etudiant\": { \"id\": 3 },\n    \"cours\": { \"id\": 2 },\n    \"dateInscription\": \"2026-10-10\",\n    \"note\": 17.0,\n    \"statut\": \"VALIDE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["inscriptions"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "POST Erreur 400 - Note supérieure à 20",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"etudiant\": { \"id\": 1 },\n    \"cours\": { \"id\": 1 },\n    \"dateInscription\": \"2026-10-01\",\n    \"note\": 25.0,\n    \"statut\": \"VALIDE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["inscriptions"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code est 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
