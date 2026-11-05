@@ -1,5 +1,6 @@
-# DS1 – Développement Web : Projet Spring Boot
-## Système de Gestion Scolaire et Académique
+# API REST de gestion universitaire
+
+Projet Spring Boot de gestion universitaire : cette API REST permet de gérer les départements, enseignants, salles, cours, étudiants et inscriptions.
 
 ---
 
@@ -40,14 +41,15 @@ Cours       ──(1..*)──> Inscription   [OneToMany / ManyToOne]
 
 | Technologie | Version | Usage |
 |---|---|---|
-| **Java** | 17 (LTS) | Langage principal |
-| **Spring Boot** | 3.2.5 | Framework principal |
-| **Spring Data JPA** | Inclus | ORM et accès base de données |
-| **Hibernate** | 6.4.4 | Implémentation JPA |
-| **MySQL / MariaDB** | 8.0 / 10.4 | Base de données (XAMPP) |
-| **Lombok** | Optionnel | Déclaré dans pom.xml |
-| **Maven** | 3.9.x | Gestion du build |
-| **Postman / Newman** | CLI | Tests des API REST |
+| **Java** | 17 | Langage principal (`java.version` dans `pom.xml`) |
+| **Spring Boot** | 3.2.5 | Version du parent Maven |
+| **Spring Data JPA / Hibernate** | Versions gérées par Spring Boot | JPA et persistance ; aucune version n'est fixée directement dans `pom.xml` |
+| **MySQL Connector/J** | Version gérée par Spring Boot | Pilote JDBC ; aucune version n'est fixée directement dans `pom.xml` |
+| **MySQL via XAMPP** | Non précisée dans `pom.xml` | Base configurée sur localhost:3306 |
+| **Maven** | Non précisée dans `pom.xml` | Gestion du build et lancement |
+| **Lombok** | Version gérée par Spring Boot | Dépendance optionnelle déclarée dans `pom.xml` |
+
+Les versions des dépendances gérées transitivement par Spring Boot et la version de Maven ne sont pas déclarées explicitement dans `pom.xml`.
 
 ---
 
@@ -251,10 +253,7 @@ spring.jpa.properties.hibernate.format_sql=true
 - MySQL ou MariaDB (ex : XAMPP) démarré sur le port 3306
 
 ### Démarrage de la base de données (XAMPP)
-```bash
-# Lancer mysqld depuis le dossier XAMPP
-C:\xampp\mysql\bin\mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini --standalone
-```
+Ouvrir le panneau de contrôle XAMPP et démarrer le module **MySQL**. La configuration utilise `localhost:3306` et la base `gestion_ecole_db`. L'option `createDatabaseIfNotExist=true` permet sa création au démarrage si nécessaire.
 
 ### Démarrage de l'application
 ```bash
@@ -267,7 +266,7 @@ mvn clean package
 java -jar target/projet-1.0.0.jar
 ```
 
-L'application démarre sur **http://localhost:8080**
+L'application démarre sur **http://localhost:8080**. L'URL de base de l'API est **http://localhost:8080/api**.
 
 ### Données initiales
 Au premier démarrage, le `CommandLineRunner` dans `ProjetApplication.java` insère automatiquement un jeu de données de démonstration :
@@ -277,7 +276,7 @@ Au premier démarrage, le `CommandLineRunner` dans `ProjetApplication.java` ins�
 
 ---
 
-## 10. Tests avec Postman
+## 10. Tests Postman
 
 ### Importer la collection
 1. Ouvrir **Postman**
@@ -350,7 +349,11 @@ Retourne :
 
 ---
 
-## 12. Ajout Collaborateur GitHub
+## 12. Auteur
+
+**Hamza Ben Romdhane** — ESPRIT / ESB
+
+## 13. Ajout Collaborateur GitHub
 
 Pour ajouter l'enseignant comme collaborateur du dépôt :
 1. Aller dans **Settings → Collaborators** du dépôt GitHub
@@ -360,4 +363,4 @@ Pour ajouter l'enseignant comme collaborateur du dépôt :
 
 ---
 
-*Projet réalisé dans le cadre du DS1 – Développement Web | Spring Boot 3 + MySQL*
+*Projet réalisé dans le cadre du DS1 JEE — API REST de gestion universitaire avec Spring Boot et MySQL.*
